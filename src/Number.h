@@ -1,3 +1,6 @@
+#ifndef _NUMBER_H_
+#define _NUMBER_H_
+
 class Number {
 public:
 
@@ -15,9 +18,11 @@ public:
     static Number QUEEN;
     static Number KING;
 
-    int getValue();
+    int getValue() const;
 
 private:
     Number(int value);
     int value;
 };
+
+#endif

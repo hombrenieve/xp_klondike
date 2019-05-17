@@ -17,6 +17,6 @@ Number Number::KING(13);
 Number::Number(int value) : value(value)
 { }
 
-int Number::getValue() {
+int Number::getValue() const {
     return this->value;
 }

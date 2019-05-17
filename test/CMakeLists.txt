@@ -1,5 +1,5 @@
 
-file(GLOB_RECURSE SOURCES_TEST "*Test.cc")
+file(GLOB_RECURSE SOURCES_TEST "*.cc")
 
 
 add_executable(
