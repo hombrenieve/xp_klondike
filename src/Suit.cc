@@ -5,19 +5,33 @@ Suit Suit::HEARTS(&Color::RED, 'h'),
     Suit::CLOVERS(&Color::BLACK, 'c'), 
     Suit::PIKES(&Color::BLACK, 'p');
 
+std::string Suit::initialsString{ "hdcp" };
+
 Suit::Suit(Color* color, char initial) : 
     color(color),
     initial(initial)
 { }
 
-char* Suit::initials() {
-    return nullptr;
+const std::string& Suit::initials() {
+    return initialsString;
 }
     
-Suit* Suit::find(char initial) {
-    return &DIAMONDS;
+const Suit* Suit::find(char initial) {
+    switch(initial) {
+        case 'h':
+            return &HEARTS;
+        case 'd':
+            return &DIAMONDS;
+        case 'c':
+            return &CLOVERS;
+        case 'p':
+            return &PIKES;
+        default:
+            break;
+    }
+    return nullptr;
 }
 
-Color* Suit::getColor() {
+const Color* Suit::getColor() {
     return &Color::BLACK;
 }
