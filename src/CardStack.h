@@ -12,7 +12,7 @@ public:
     virtual Card peek();
     virtual Card pop();
     virtual void push(const Card& card);
-private:
+protected:
     std::stack<Card> cards;
 };
 
