@@ -11,8 +11,8 @@ target_link_libraries(
     unit_tests
     gtest_main
     klondike
-    ${GTEST_LIBRARIES}
-    ${GMOCK_LIBRARIES}
+    gtest
+    gmock
     pthread
     )
 
