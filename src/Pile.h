@@ -3,7 +3,7 @@
 
 #include "CardStack.h"
 
-#include <stack>
+#include <deque>
 #include <list>
 
 class Pile: public CardStack {
@@ -14,7 +14,7 @@ public:
     void addToTop(const std::list<Card>& cards);
     void removeTop(int numberOfCards);
     int getNumberOfFaceUpCards();
-    std::stack<Card> getCards();
+    const std::deque<Card>& getCards();
     int getNumber();
 private:
     void flipFirstCard();

@@ -18,15 +18,15 @@ TEST(CardTest, FlipCard) {
 
 
 TEST(CardTest, isNextToCorrect) {
-    Card ace = CardBuilder().number(Number::ACE)->build();
-    Card two = CardBuilder().number(Number::TWO)->build();
+    Card ace = CardBuilder().number(Number::ACE).build();
+    Card two = CardBuilder().number(Number::TWO).build();
 
     EXPECT_TRUE(two.isNextTo(ace));
 }
 
 TEST(CardTest, isNextToNotCorrect) {
-    Card ace = CardBuilder().number(Number::ACE)->build();
-    Card two = CardBuilder().number(Number::TWO)->build();
+    Card ace = CardBuilder().number(Number::ACE).build();
+    Card two = CardBuilder().number(Number::TWO).build();
 
     EXPECT_FALSE(ace.isNextTo(two));
 }

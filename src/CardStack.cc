@@ -11,18 +11,18 @@ bool CardStack::empty() {
     return cards.empty();
 }
 
-Card CardStack::peek() {
+Card& CardStack::peek() {
     assert(not this->empty());
-    return this->cards.top();
+    return this->cards.front();
 }
 
 Card CardStack::pop() {
     assert(not this->empty());
     Card card = this->peek();
-    this->cards.pop();
+    this->cards.pop_front();
     return card;
 }
 
 void CardStack::push(const Card& card) {
-    this->cards.push(card);
+    this->cards.push_front(card);
 }

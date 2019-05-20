@@ -33,5 +33,5 @@ const Suit* Suit::find(char initial) {
 }
 
 const Color* Suit::getColor() const {
-    return &Color::BLACK;
+    return color;
 }

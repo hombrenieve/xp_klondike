@@ -3,27 +3,28 @@
 CardBuilder::CardBuilder() :
     suitValue(&Suit::HEARTS),
     numberValue(&Number::ACE),
-    facedUpValue(false)
+    facedUpValue(false),
+    card(suitValue, numberValue)
 { }
 
-Card CardBuilder::build() {
-    Card card(suitValue, numberValue);
+Card&& CardBuilder::build() {
+    this->card = Card(suitValue, numberValue);
     if(facedUpValue)
-        card.flip();
-    return card;
+        this->card.flip();
+    return std::move(this->card);
 }
 
-CardBuilder* CardBuilder::number(const Number& number) {
+CardBuilder& CardBuilder::number(const Number& number) {
     this->numberValue = &number;
-    return this;
+    return *this;
 }
 
-CardBuilder* CardBuilder::suit(const Suit& suit) {
+CardBuilder& CardBuilder::suit(const Suit& suit) {
     this->suitValue = &suit;
-    return this;
+    return *this;
 }
 
-CardBuilder* CardBuilder::facedUp(bool facedUp) {
+CardBuilder& CardBuilder::facedUp(bool facedUp) {
     this->facedUpValue = facedUp;
-    return this;
+    return *this;
 }
