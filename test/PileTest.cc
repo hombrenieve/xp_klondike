@@ -20,6 +20,7 @@ TEST(PileTest, getTopWithOneElement) {
     auto top = pile.getTop(1);
 
     EXPECT_THAT(top, SizeIs(1));
+    EXPECT_FALSE(pile.empty());
 }
 
 TEST(PileTest, getTopMoreElementsThanStored) {
@@ -28,6 +29,7 @@ TEST(PileTest, getTopMoreElementsThanStored) {
     auto top = pile.getTop(2);
 
     EXPECT_THAT(top, SizeIs(1));
+    EXPECT_FALSE(pile.empty());
 }
 
 TEST(PileTest, fitsInWrongCardNumber) {
