@@ -11,12 +11,11 @@ public:
     PileBuilder& withCard(const Card& card);
     PileBuilder& number(int number);
 
-    Pile&& build();
+    Pile build();
 
 private:
     std::list<Card> cards;
     int numberValue;
-    Pile pile;
 };
 
 

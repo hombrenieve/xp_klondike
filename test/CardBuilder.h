@@ -6,7 +6,7 @@
 class CardBuilder {
 public:
     CardBuilder();
-    Card&& build();
+    Card build();
     CardBuilder& number(const Number& number);
     CardBuilder& suit(const Suit& suit);
     CardBuilder& facedUp(bool facedUp);
@@ -14,7 +14,6 @@ private:
     const Suit* suitValue;
     const Number* numberValue;
     bool facedUpValue;
-    Card card;
 };
 
 #endif

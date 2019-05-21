@@ -3,15 +3,14 @@
 CardBuilder::CardBuilder() :
     suitValue(&Suit::HEARTS),
     numberValue(&Number::ACE),
-    facedUpValue(false),
-    card(suitValue, numberValue)
+    facedUpValue(false)
 { }
 
-Card&& CardBuilder::build() {
-    this->card = Card(suitValue, numberValue);
+Card CardBuilder::build() {
+    Card card(suitValue, numberValue);
     if(facedUpValue)
-        this->card.flip();
-    return std::move(this->card);
+        card.flip();
+    return card;
 }
 
 CardBuilder& CardBuilder::number(const Number& number) {
