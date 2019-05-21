@@ -6,7 +6,13 @@
 
 using namespace testing;
 
-TEST(StockTest, takeTopWithEmptyStock) {
+class StockTest: public Test {
+protected:
+    StockBuilder stockBuilder;
+    CardBuilder cardBuilder;
+};
+
+TEST_F(StockTest, takeTopWithEmptyStock) {
     Stock stock;
 
     auto top = stock.takeTop(1);
@@ -15,8 +21,8 @@ TEST(StockTest, takeTopWithEmptyStock) {
     EXPECT_TRUE(stock.empty());
 }
 
-TEST(StockTest, takeTopExactlyInStock) {
-    Stock stock = StockBuilder().withCard(CardBuilder().build()).build();
+TEST_F(StockTest, takeTopExactlyInStock) {
+    Stock stock = stockBuilder.withCard(cardBuilder.build()).build();
 
     auto top = stock.takeTop(1);
 
@@ -24,8 +30,8 @@ TEST(StockTest, takeTopExactlyInStock) {
     EXPECT_TRUE(stock.empty());
 }
 
-TEST(StockTest, takeTopMoreThanInStock) {
-    Stock stock = StockBuilder().withCard(CardBuilder().build()).build();
+TEST_F(StockTest, takeTopMoreThanInStock) {
+    Stock stock = stockBuilder.withCard(cardBuilder.build()).build();
 
     auto top = stock.takeTop(2);
 

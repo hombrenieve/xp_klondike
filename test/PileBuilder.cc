@@ -15,5 +15,7 @@ PileBuilder& PileBuilder::number(int number) {
 }
 
 Pile PileBuilder::build() {
-    return Pile(this->numberValue, this->cards);
+    Pile pile(this->numberValue, this->cards);
+    this->cards.clear();
+    return pile;
 }

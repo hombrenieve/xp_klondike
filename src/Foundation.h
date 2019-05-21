@@ -7,8 +7,8 @@
 class Foundation: public CardStack {
 public:
     Foundation(const Suit* suit);
-    bool isComplete() const;
-    bool fitsIn(const Card& card) const;
+    bool isComplete();
+    bool fitsIn(const Card& card);
     const Suit* getSuit() const;
 private:
     const Suit* suit;

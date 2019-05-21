@@ -11,8 +11,9 @@ StockBuilder& StockBuilder::withCard(const Card& card) {
 
 Stock StockBuilder::build() {
     Stock stock;
-    for(const auto& card: cards) {
+    for(const auto& card: this->cards) {
         stock.push(card);
     }
+    this->cards.clear();
     return stock;
 }
