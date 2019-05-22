@@ -9,7 +9,7 @@ public:
         EMPTY_WASTE,
         EMPTY_FOUNDATION,
         EMPTY_PILE,
-        NO_EMPTY_PILE,
+        NO_EMPTY_STOCK,
         NO_FIT_FOUNDATION,
         NO_FIT_PILE,
         SAME_PILE,

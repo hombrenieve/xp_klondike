@@ -30,3 +30,8 @@ const Suit* Card::getSuit() const {
 const Color* Card::getColor() const {
     return this->getSuit()->getColor();
 }
+
+bool Card::operator==(const Card& other) const {
+    return this->getNumber() == other.getNumber() and
+        this->getSuit() == other.getSuit();
+}

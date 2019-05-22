@@ -14,6 +14,7 @@ public:
     const Number* getNumber() const;
     const Suit* getSuit() const;
     const Color* getColor() const;
+    bool operator==(const Card& other) const;
 private:
     const Suit* suit;
     const Number* number;
