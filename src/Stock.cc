@@ -1,4 +1,7 @@
 #include "Stock.h"
+#include <random>
+#include <algorithm>
+#include <iterator>
 
 Stock::Stock()
 { 
@@ -9,6 +12,10 @@ Stock::Stock()
             this->push(Card(suit, number));
         }
     }
+    std::random_device randomDevice;
+    std::mt19937 generator(randomDevice());
+ 
+    std::shuffle(this->cards.begin(), this->cards.end(), generator);
 }
 
 std::list<Card> Stock::takeTop(int quantity) {
