@@ -36,6 +36,9 @@ private:
     Waste waste;
     Stock stock;
 
+    void initializeFoundations();
+    void initializePiles();
+
 };
 
 #endif

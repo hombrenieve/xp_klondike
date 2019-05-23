@@ -33,7 +33,7 @@ TEST_F(GameTest, isFinishedWhenFinished) {
     EXPECT_TRUE(game.isFinished());
 }
 
-TEST_F(GameTest, clearRemovesFinishedState) {
+TEST_F(GameTest, clear) {
     Game game = gameBuilder.
         foundation(Suit::HEARTS, foundationBuilder.suit(Suit::HEARTS).fullSuit().build()).
         foundation(Suit::DIAMONDS, foundationBuilder.suit(Suit::DIAMONDS).fullSuit().build()).
@@ -44,6 +44,8 @@ TEST_F(GameTest, clearRemovesFinishedState) {
 
     game.clear();
     EXPECT_FALSE(game.isFinished());
+    EXPECT_TRUE(game.getFoundations().at(&Suit::HEARTS).empty());
+    EXPECT_FALSE(game.getStock().empty());
 }
 
 TEST_F(GameTest, moveFromStockToWasteWithoutError) {
@@ -294,4 +296,63 @@ TEST_F(GameTest, moveFromPileToFoundationSuccess) {
     ASSERT_FALSE(game.getFoundations().at(&suit).empty());
     EXPECT_THAT(game.getFoundations().at(&suit).peek(), Eq(card));
     EXPECT_TRUE(game.getPiles().front().empty());
+}
+
+TEST_F(GameTest, moveFromPileToPileEmptyPile) {
+    Game game = gameBuilder.build();
+
+    auto* error = game.moveFromPileToPile(0, 1, 1);
+    EXPECT_THAT(error, Eq(&Error::EMPTY_PILE));
+}
+
+TEST_F(GameTest, moveFromPileToPileSamePile) {
+    Game game = gameBuilder.
+        pile(0, pileBuilder.
+            number(0).
+            withCard(cardBuilder.facedUp(true).number(Number::KING).build()).
+            build()).
+        build();
+
+    auto* error = game.moveFromPileToPile(0, 0, 1);
+    EXPECT_THAT(error, Eq(&Error::SAME_PILE));
+}
+
+TEST_F(GameTest, moveFromPileToPileNoFit) {
+    Card card = cardBuilder.suit(Suit::CLOVERS).facedUp(true).number(Number::THREE).build();
+    int origin = 3;
+    int destination = 0;
+    Game game = gameBuilder.
+        pile(destination, pileBuilder.
+            number(destination).
+            withCard(cardBuilder.suit(Suit::HEARTS).number(Number::KING).build()).
+            build()).
+        pile(origin, pileBuilder.
+            number(origin).
+            withCard(card).
+            build()).
+        build();
+
+    auto* error = game.moveFromPileToPile(origin, destination, 1);
+    EXPECT_THAT(error, Eq(&Error::NO_FIT_PILE));
+}
+
+TEST_F(GameTest, moveFromPileToPileSuccess) {
+    Card card = cardBuilder.suit(Suit::CLOVERS).facedUp(true).number(Number::QUEEN).build();
+    int origin = 2;
+    int destination = 0;
+    Game game = gameBuilder.
+        pile(destination, pileBuilder.
+            number(destination).
+            withCard(cardBuilder.suit(Suit::HEARTS).number(Number::KING).build()).
+            build()).
+        pile(origin, pileBuilder.
+            number(origin).
+            withCard(card).
+            build()).
+        build();
+
+    auto* error = game.moveFromPileToPile(origin, destination, 1);
+    EXPECT_THAT(error, IsNull());
+    ASSERT_FALSE(game.getPiles().front().empty());
+    EXPECT_THAT(game.getPiles().front().peek(), Eq(card));
 }

@@ -1,14 +1,35 @@
 #include "Game.h"
 
 Game::Game()
-{ }
+{
+    this->initializePiles();
+    this->initializeFoundations();
+}
 
 void Game::clear() {
+    this->waste = Waste();
+    this->stock = Stock();
+    this->initializePiles();
+    this->initializeFoundations();
+}
 
+void Game::initializeFoundations() {
+    for(const auto initial: Suit::initials()) {
+        const Suit* suit = Suit::find(initial);
+        this->foundations.emplace(std::make_pair(suit, suit));
+    }
+}
+
+void Game::initializePiles() {
+    for(int i = 0; i < Game::NUMBER_OF_PILES; i++) {
+        Pile pile(i, this->getStock().takeTop(i+1));
+        pile.peek().flip();
+        this->piles.push_back(pile);
+    }
 }
 
 bool Game::isFinished() const {
-    return false;
+   return false;
 }
 
 const Error* Game::moveFromStockToWaste() {
