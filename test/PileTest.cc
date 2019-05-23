@@ -12,6 +12,27 @@ protected:
     CardBuilder cardBuilder;
 };
 
+TEST_F(PileTest, push) {
+    Pile pile = pileBuilder.build();
+    EXPECT_TRUE(pile.empty());
+    Card card = cardBuilder.build();
+
+    pile.push(card);
+    ASSERT_FALSE(pile.empty());
+    EXPECT_EQ(card, pile.peek());
+}
+
+TEST_F(PileTest, pop) {
+    Card card = cardBuilder.number(Number::ACE).suit(Suit::DIAMONDS).build();
+    Pile pile = pileBuilder.withCard(card).build();
+    EXPECT_FALSE(pile.empty());
+
+    Card result = pile.pop();
+    EXPECT_EQ(card, card);
+    EXPECT_TRUE(pile.empty());
+}
+
+
 TEST_F(PileTest, getTopWithEmptyPile) {
     Pile pile = pileBuilder.build();
 
