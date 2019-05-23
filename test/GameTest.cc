@@ -204,3 +204,94 @@ TEST_F(GameTest, moveFromWasteToPileWithSuccess) {
     EXPECT_THAT(game.getPiles().front().peek(), Eq(card));
 }
 
+TEST_F(GameTest, moveFromFoundationToPileEmptyFoundation) {
+    Game game;
+
+    auto* error = game.moveFromFoundationToPile(&Suit::CLOVERS, 0);
+    EXPECT_THAT(error, Eq(&Error::EMPTY_FOUNDATION));
+}
+
+TEST_F(GameTest, moveFromFoundationToPileNoFit) {
+    const Suit& suit = Suit::DIAMONDS;
+    Card card = cardBuilder.suit(suit).facedUp(true).number(Number::SIX).build();
+    Game game = gameBuilder.
+        foundation(suit, foundationBuilder.
+            suit(suit).
+            withCard(card).
+            build()).
+        pile(0, pileBuilder.
+            number(0).
+            withCard(cardBuilder.suit(Suit::CLOVERS).facedUp(true).number(Number::EIGHT).build()).
+            build()).
+        build();
+
+    auto* error = game.moveFromFoundationToPile(&suit, 0);
+    EXPECT_THAT(error, Eq(&Error::NO_FIT_PILE));
+}
+
+TEST_F(GameTest, moveFromFoundationToPileSucess) {
+    const Suit& suit = Suit::HEARTS;
+    Card card = cardBuilder.suit(suit).facedUp(true).number(Number::SIX).build();
+    Game game = gameBuilder.
+        foundation(suit, foundationBuilder.
+            suit(suit).
+            withCard(card).
+            build()).
+        pile(0, pileBuilder.
+            number(0).
+            withCard(cardBuilder.suit(Suit::PIKES).facedUp(true).number(Number::SEVEN).build()).
+            build()).
+        build();
+
+    auto* error = game.moveFromFoundationToPile(&suit, 0);
+    EXPECT_THAT(error, IsNull());
+    ASSERT_FALSE(game.getPiles().front().empty());
+    EXPECT_THAT(game.getPiles().front().peek(), Eq(card));
+    EXPECT_TRUE(game.getFoundations().at(&suit).empty());
+}
+
+TEST_F(GameTest, moveFromPileToFoundationEmptyPile) {
+    Game game;
+
+    auto* error = game.moveFromPileToFoundation(0, &Suit::CLOVERS);
+    EXPECT_THAT(error, Eq(&Error::EMPTY_PILE));
+}
+
+TEST_F(GameTest, moveFromPileToFoundationNoFit) {
+    const Suit& suit = Suit::DIAMONDS;
+    Card card = cardBuilder.suit(suit).facedUp(true).number(Number::SIX).build();
+    Game game = gameBuilder.
+        foundation(suit, foundationBuilder.
+            suit(suit).
+            withCard(cardBuilder.facedUp(true).number(Number::EIGHT).build()).
+            build()).
+        pile(0, pileBuilder.
+            number(0).
+            withCard(card).
+            build()).
+        build();
+
+    auto* error = game.moveFromFoundationToPile(&suit, 0);
+    EXPECT_THAT(error, Eq(&Error::NO_FIT_FOUNDATION));
+}
+
+TEST_F(GameTest, moveFromPileToFoundationSuccess) {
+    const Suit& suit = Suit::HEARTS;
+    Card card = cardBuilder.suit(suit).facedUp(true).number(Number::TWO).build();
+    Game game = gameBuilder.
+        foundation(suit, foundationBuilder.
+            suit(suit).
+            withCard(cardBuilder.facedUp(true).number(Number::THREE).build()).
+            build()).
+        pile(0, pileBuilder.
+            number(0).
+            withCard(card).
+            build()).
+        build();
+
+    auto* error = game.moveFromFoundationToPile(&suit, 0);
+    EXPECT_THAT(error, IsNull());
+    ASSERT_FALSE(game.getFoundations().at(&suit).empty());
+    EXPECT_THAT(game.getFoundations().at(&suit).peek(), Eq(card));
+    EXPECT_TRUE(game.getPiles().front().empty());
+}
