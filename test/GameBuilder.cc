@@ -7,13 +7,15 @@ GameBuilder::GameBuilder()
     }
 }
 
-GameBuilder& GameBuilder::stock(const Stock& stock) {
-    this->stockValue = stock;
+GameBuilder& GameBuilder::clearStock() {
+    while(not this->stockValue.empty()) {
+        this->stockValue.pop();
+    }
     return *this;
 }
 
-GameBuilder& GameBuilder::waste(const Waste& waste) {
-    this->wasteValue = waste;
+GameBuilder& GameBuilder::addToStock(const Card& card) {
+    this->stockValue.push(card);
     return *this;
 }
 

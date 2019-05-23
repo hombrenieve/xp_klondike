@@ -1,6 +1,4 @@
 #include "Stock.h"
-#include "StockBuilder.h"
-#include "CardBuilder.h"
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
@@ -8,34 +6,46 @@ using namespace testing;
 
 class StockTest: public Test {
 protected:
-    StockBuilder stockBuilder;
-    CardBuilder cardBuilder;
+    Stock stock;
+    static int stockSize() {
+        return Number::DECK_LENGTH*Suit::initials().size();
+    }
 };
 
 TEST_F(StockTest, takeTopWithEmptyStock) {
-    Stock stock;
+    EXPECT_FALSE(stock.empty());
+    auto top = stock.takeTop(stockSize());
+    EXPECT_TRUE(stock.empty());
 
-    auto top = stock.takeTop(1);
+    top = stock.takeTop(3);
 
-    EXPECT_THAT(top, IsEmpty());
+    EXPECT_TRUE(top.empty());
     EXPECT_TRUE(stock.empty());
 }
 
-TEST_F(StockTest, takeTopExactlyInStock) {
-    Stock stock = stockBuilder.withCard(cardBuilder.build()).build();
+TEST_F(StockTest, takeTopAllStock) {
+    EXPECT_FALSE(stock.empty());
 
-    auto top = stock.takeTop(1);
+    auto top = stock.takeTop(stockSize());
 
-    EXPECT_THAT(top, SizeIs(1));
+    EXPECT_THAT(top, SizeIs(stockSize()));
     EXPECT_TRUE(stock.empty());
 }
 
 TEST_F(StockTest, takeTopMoreThanInStock) {
-    Stock stock = stockBuilder.withCard(cardBuilder.build()).build();
+    EXPECT_FALSE(stock.empty());
 
-    auto top = stock.takeTop(2);
+    auto top = stock.takeTop(stockSize()+1);
 
-    EXPECT_THAT(top, SizeIs(1));
+    EXPECT_THAT(top, SizeIs(stockSize()));
     EXPECT_TRUE(stock.empty());
 }
 
+TEST_F(StockTest, takeSomeStock) {
+    EXPECT_FALSE(stock.empty());
+
+    auto top = stock.takeTop(3);
+
+    EXPECT_THAT(top, SizeIs(3));
+    EXPECT_FALSE(stock.empty());
+}

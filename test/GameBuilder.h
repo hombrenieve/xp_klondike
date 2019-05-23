@@ -13,8 +13,8 @@
 class GameBuilder {
 public:
     GameBuilder();
-    GameBuilder& stock(const Stock& stock);
-    GameBuilder& waste(const Waste& waste);
+    GameBuilder& clearStock();
+    GameBuilder& addToStock(const Card& card);
     GameBuilder& addToWaste(const Card& card);
     GameBuilder& foundation(const Suit& suit, const Foundation& foundation);
     GameBuilder& pile(int position, const Pile& pile);

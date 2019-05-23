@@ -1,6 +1,6 @@
 #include "GameBuilder.h"
 #include "FoundationBuilder.h"
-#include "StockBuilder.h"
+#include "PileBuilder.h"
 #include "CardBuilder.h"
 
 #include <gtest/gtest.h>
@@ -13,7 +13,7 @@ protected:
     GameBuilder gameBuilder;
     FoundationBuilder foundationBuilder;
     CardBuilder cardBuilder;
-    StockBuilder stockBuilder;
+    PileBuilder pileBuilder;
 };
 
 TEST_F(GameTest, isFinishedWhenNotFinished) {
@@ -57,7 +57,7 @@ TEST_F(GameTest, moveFromStockToWasteWithoutError) {
 }
 
 TEST_F(GameTest, moveFromStockToWasteWhenStockIsEmpty) {
-    Game game = gameBuilder.build();
+    Game game = gameBuilder.clearStock().build();
     EXPECT_TRUE(game.getStock().empty());
     EXPECT_TRUE(game.getWaste().empty());
 
@@ -79,6 +79,7 @@ TEST_F(GameTest, moveFromWasteToFoundationWithoutError) {
 
     auto* error = game.moveFromWasteToFoundation(&suit);
     EXPECT_THAT(error, IsNull());
+    ASSERT_FALSE(game.getFoundations().at(&suit).empty());
     EXPECT_THAT(game.getFoundations().at(&suit).peek(), Eq(card));
 }
 
@@ -91,6 +92,7 @@ TEST_F(GameTest, moveFromWasteToFoundationWithoutErrorEmptyFoundation) {
 
     auto* error = game.moveFromWasteToFoundation(&suit);
     EXPECT_THAT(error, IsNull());
+    ASSERT_FALSE(game.getFoundations().at(&suit).empty());
     EXPECT_THAT(game.getFoundations().at(&suit).peek(), Eq(card));
 }
 
@@ -120,11 +122,13 @@ TEST_F(GameTest, moveFromWasteToFoundationWithErrorNoFit) {
 
     auto* error = game.moveFromWasteToFoundation(&suit);
     EXPECT_THAT(error, Eq(&Error::NO_FIT_FOUNDATION));
+    ASSERT_FALSE(game.getFoundations().at(&suit).empty());
     EXPECT_THAT(game.getFoundations().at(&suit).peek(), Eq(card));
 }
 
 TEST_F(GameTest, moveFromWasteToStockWithoutError) {
     Game game = gameBuilder.
+        clearStock().
         addToWaste(cardBuilder.facedUp(true).build()).
         build();
     EXPECT_TRUE(game.getStock().empty());
@@ -138,7 +142,6 @@ TEST_F(GameTest, moveFromWasteToStockWithoutError) {
 TEST_F(GameTest, moveFromWasteToStockWhenStockIsNotEmpty) {
     Game game = gameBuilder.
         addToWaste(cardBuilder.facedUp(true).build()).
-        stock(stockBuilder.withCard(cardBuilder.number(Number::SIX).build()).build()).
         build();
 
     auto* error = game.moveFromWasteToStock();
@@ -146,8 +149,58 @@ TEST_F(GameTest, moveFromWasteToStockWhenStockIsNotEmpty) {
 }
 
 TEST_F(GameTest, moveFromWasteToStockWhenWasteIsEmpty) {
-    Game game = gameBuilder.build();
+    Game game = gameBuilder.clearStock().build();
 
     auto* error = game.moveFromWasteToStock();
     EXPECT_THAT(error, Eq(&Error::EMPTY_WASTE));
 }
+
+TEST_F(GameTest, moveFromWasteToPileWhenWasteIsEmpty) {
+    Game game = gameBuilder.build();
+
+    auto* error = game.moveFromWasteToPile(0);
+    EXPECT_THAT(error, Eq(&Error::EMPTY_WASTE));
+}
+
+TEST_F(GameTest, moveFromWasteToPileWithErrorNoFit) {
+    int pileNumber = 0;
+    Game game = gameBuilder.
+        pile(pileNumber, pileBuilder.
+            number(pileNumber).
+            withCard(cardBuilder.suit(Suit::DIAMONDS).facedUp(true).number(Number::EIGHT).build()).
+            build()).
+        addToWaste(cardBuilder.suit(Suit::CLOVERS).number(Number::SIX).build()).
+        build();
+
+    auto* error = game.moveFromWasteToPile(pileNumber);
+    EXPECT_THAT(error, Eq(&Error::NO_FIT_PILE));
+}
+
+TEST_F(GameTest, moveFromWasteToPileEmptyPile) {
+    Card card = cardBuilder.suit(Suit::DIAMONDS).facedUp(true).number(Number::SIX).build();
+    Game game = gameBuilder.
+        addToWaste(card).
+        build();
+
+    auto* error = game.moveFromWasteToPile(0);
+    EXPECT_THAT(error, IsNull());
+    ASSERT_FALSE(game.getPiles().front().empty());
+    EXPECT_THAT(game.getPiles().front().peek(), Eq(card));
+}
+
+TEST_F(GameTest, moveFromWasteToPileWithSuccess) {
+    Card card = cardBuilder.suit(Suit::DIAMONDS).facedUp(true).number(Number::SIX).build();
+    Game game = gameBuilder.
+        pile(0, pileBuilder.
+            number(0).
+            withCard(cardBuilder.suit(Suit::CLOVERS).facedUp(true).number(Number::SEVEN).build()).
+            build()).
+        addToWaste(card).
+        build();
+
+    auto* error = game.moveFromWasteToPile(0);
+    EXPECT_THAT(error, IsNull());
+    ASSERT_FALSE(game.getPiles().front().empty());
+    EXPECT_THAT(game.getPiles().front().peek(), Eq(card));
+}
+
